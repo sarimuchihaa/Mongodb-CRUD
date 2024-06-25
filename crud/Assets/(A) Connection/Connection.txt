@@ -1,0 +1,126 @@
+(1)
+(Connection)
+npm init -y
+npm i express
+npm i mongoose
+npx nodemon app.js
+(app.js)
+const express = require('express');
+const app     = express();
+
+const userModel = require('./usermodel')
+
+app.get('/', (req, res) => {
+    res.send("Mongodb🌴");
+})
+
+app.listen(3000);
+
+
+(usermodel.js)
+const mongoose = require('mongoose');
+
+mongoose.connect(`mongodb://127.0.0.1:27017/mongopractice`);
+
+const userSchema = mongoose.Schema({
+    name: String,
+    username: String,
+    email: String
+})
+
+module.exports = mongoose.model("user", userSchema);
+Terminal:
+Mongodb🌴
+
+
+
+(2)
+(Create user)
+(app.js)
+app.get('/create', async (req, res) => {
+    let createdUser = await userModel.create({
+        name: "John Doe",
+        email: "john1@gmail.com",
+        username: "Johny"
+    })
+
+    res.send(createdUser);
+})
+Terminal:
+http://localhost:3000/create
+{
+  "name": "John Doe",
+  "username": "Johny",
+  "email": "john1@gmail.com",
+  "_id": "667a838befe039c82ca23b05",
+  "__v": 0
+}
+
+
+
+(3)
+(Update user)
+(app.js)
+app.get('/update', async (req, res) => {
+    let updatedUser = await userModel.findOneAndUpdate({name: "John Doe"}, {username: "Sasuke"}, {new: true})
+    res.send(updatedUser);
+})
+Terminal:
+http://localhost:3000/update
+{
+  "_id": "667a891f7833b0c084d19b7c",
+  "name": "John Doe",
+  "username": "Sasuke",
+  "email": "john1@gmail.com",
+  "__v": 0
+}
+
+
+
+(4)
+(Read user)
+(app.js)
+app.get('/read', async (req, res) => {
+    let users = await userModel.findOne({username: "Sasuke"})
+    res.send(users);
+})
+Terminal:
+http://localhost:3000/read
+{
+  "_id": "667a891f7833b0c084d19b7c",
+  "name": "John Doe",
+  "username": "Sasuke",
+  "email": "john1@gmail.com",
+  "__v": 0
+}
+
+
+(app.js)
+app.get('/reads', async (req, res) => {
+    let users = await userModel.find()
+    res.send(users);
+})
+Terminal:
+http://localhost:3000/reads
+[
+  {
+    "_id": "667a891f7833b0c084d19b7c",
+    "name": "John Doe",
+    "username": "Sasuke",
+    "email": "john1@gmail.com",
+    "__v": 0
+  },
+  {
+    "_id": "667a8a9a42b82628375926b5",
+    "name": "Naruto",
+    "username": "Narutoo",
+    "email": "naruto2@gmail.com",
+    "__v": 0
+  }
+]
+
+
+
+(5)
+(Delete user)
+(app.js)
